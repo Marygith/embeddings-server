@@ -10,8 +10,7 @@ import java.io.IOException;
 @Getter
 public class ExecutionPlan {
 
-    @Param({/*"10", "100", "1000", */"1000"})
+    @Param({"10", "100", "10"})
     private int embeddingsAmount;
-
 
 }

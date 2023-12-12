@@ -48,42 +48,15 @@ public class EmbeddingGenerator {
         }
     }
     public void generateData() {
-//        generateEmbedding();
-//        generateEmbeddingAsList();
         generateId();
-//        generateAvroId();
     }
 
-    private void generateEmbedding() {
-        embeddingAsArray = new float[EMBEDDINGS_AMOUNT][EMBEDDING_SIZE];
-        for (int i = 0; i < EMBEDDINGS_AMOUNT; i++) {
-            for (int k = 0; k < EMBEDDING_SIZE; k++) {
-                embeddingAsArray[i][k] = Float.float16ToFloat((short) rand.nextInt());
-            }
-        }
-    }
 
     private void generateId() {
         id = idCounter.incrementAndGet();
     }
 
-    private void generateAvroId() {
-        avroId =  UUID.randomUUID().getMostSignificantBits();
-    }
-
-    private void generateEmbeddingAsList() {
-        embeddingAsList.clear();
-        for (int i = 0; i < EMBEDDINGS_AMOUNT; i++) {
-            embeddingAsList.add(new ArrayList<>());
-            for (int k = 0; k < EMBEDDING_SIZE; k++) {
-//                embeddingAsList.get(i).add(rand.nextFloat());
-                embeddingAsList.get(i).add(embeddingAsArray[i][k]);
-            }
-        }
-    }
-
     public List<Embedding> generateNEmbeddings(int n, int startId) {
-//        generateData();
         idCounter.set(startId);
         List<Embedding> embeddings = new ArrayList<>();
         for (int i = 0; i < n; i++) {
@@ -92,9 +65,4 @@ public class EmbeddingGenerator {
         }
         return embeddings;
     }
-
-
-
-//    private final int embeddingsAMount = 512;
-
 }

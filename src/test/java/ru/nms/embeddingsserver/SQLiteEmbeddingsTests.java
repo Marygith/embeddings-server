@@ -28,7 +28,6 @@ public class SQLiteEmbeddingsTests {
 
     @Test
     void createAndGetTest() {
-//        Statement statement = connection.createStatement();
         List<Embedding> embeddings = generator.generateNEmbeddings(5, 5);
         try (PreparedStatement preparedStatement = connection.prepareStatement("insert into embeddings values(?, ?, ?), (?, ?, ?), (?, ?, ?), (?, ?, ?), (?, ?, ?)");
              Statement statement = connection.createStatement();
@@ -116,7 +115,6 @@ public class SQLiteEmbeddingsTests {
 
             statement.executeUpdate("drop table if exists embeddings");
             statement.executeUpdate("create table embeddings (id integer, size integer, vectors blob)");
-//        Statement statement = connection.createStatement();
             List<Embedding> embeddings = generator.generateNEmbeddings(5, 0);
             int index = 1;
             while (index < 15) {

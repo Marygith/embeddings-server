@@ -21,10 +21,6 @@ public class EmbeddingDecoder extends DataDecoder<Embedding> {
             if (buffer.capacity() < MAGIC.length) {
                 System.out.println("very baad");
             }
-      /*      byte[] magic = new byte[MAGIC.length];
-            readBytes(magic, 0, MAGIC.length);
-            if (!Arrays.equals(MAGIC, magic))
-                throw new RuntimeException("Not a hasd data file.");*/
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -42,9 +38,7 @@ public class EmbeddingDecoder extends DataDecoder<Embedding> {
         int size = embedding.getEmbeddingSize();
         for (int i = 0; i < amount; i++) {
             vectors[i] = readFloatArray(size);
-//            if (readUnsignedInt(buffer) != 0) throw new RuntimeException();
         }
-//        if (readUnsignedInt(buffer) != 0) throw new RuntimeException();
         embedding.setEmbedding(vectors);
         embedding.setId(id);
     }
@@ -56,15 +50,10 @@ public class EmbeddingDecoder extends DataDecoder<Embedding> {
         buffer.get(bytes);
     }
 
-    public int readInt(MappedByteBuffer buffer) throws IOException {
+    public int readInt(MappedByteBuffer buffer) {
         return buffer.getInt();
-//        int n = decodeInt(buffer);
-//        return (n >>> 1) ^ -(n & 1);
     }
 
-    public int readUnsignedInt(MappedByteBuffer buffer) throws IOException {
-        return decodeInt(buffer);
-    }
 
     private float[] readFloatArray(int size) throws IOException {
         float[] arr = new float[size];
@@ -79,14 +68,4 @@ public class EmbeddingDecoder extends DataDecoder<Embedding> {
         return buffer;
     }
 
-//    @Override
-//    public void close() throws IOException {
-//        buffer.close();
-//    }
-
-//    private String readString() throws IOException {
-//        int length = readUnsignedInt(is);
-//        byte[] arr = is.readNBytes(length);
-//        return new String(arr);
-//    }
 }

@@ -1,6 +1,7 @@
 package ru.nms.embeddingsserver.service;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,7 @@ import java.security.PrivilegedAction;
 @Component
 @Slf4j
 public class MemoryMapper {
+    @Setter
     private MappedByteBuffer mappedByteBuffer;
 
     public void initMapperForReading(String fileName, long position, long  length) {

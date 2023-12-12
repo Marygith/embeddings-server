@@ -1,5 +1,6 @@
 package ru.nms.embeddingsserver;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static ru.nms.embeddingsserver.util.Constants.*;
@@ -37,6 +39,7 @@ class EmbeddingsServerApplicationTests {
         assertThrows(EmbeddingNotFoundException.class, () ->
                 service.findEmbeddingById(testIdFromFirstBatch));
     }
+
     @Test
     void createAndGetTest() throws IOException {
         assertDoesNotThrow(() ->
@@ -52,6 +55,7 @@ class EmbeddingsServerApplicationTests {
         embedding = service.findEmbeddingById(testIdFromSecondBatch);
         assertEquals(embedding, batch2.get(testIdFromSecondBatch - 6));
     }
+
     @Test
     void nonStandardBatchSizeCreateTest() throws IOException {
 
@@ -79,22 +83,17 @@ class EmbeddingsServerApplicationTests {
         Embedding updatedEmbedding = service.findEmbeddingById(testIdFromFirstBatch);
         assertTrue(Arrays.deepEquals(newEmbedding.getEmbedding(), updatedEmbedding.getEmbedding()));
 
-
-
-
-
     }
 
     @BeforeEach
     public void setUp() throws IOException {
-        File metaFile = new File(PATH_TO_META_FILE);
-        File embeddingsFile = new File(PATH_TO_EMBEDDINGS_FILE);
-        File positionsFile = new File(PATH_TO_POSITIONS);
-        embeddingsFile.delete();
-        metaFile.delete();
-        positionsFile.delete();
-
+        long dirname = System.currentTimeMillis();
+        new File(PATH_TO_EMBEDDINGS_DIRECTORY + dirname).mkdirs();
+        service.setPathToEmbeddingsFile(PATH_TO_EMBEDDINGS_DIRECTORY + dirname + "\\embeddings.hasd");
+        service.setPathToMetaFile(PATH_TO_EMBEDDINGS_DIRECTORY + dirname + "\\meta.txt");
+        service.setPathToPositionsFile(PATH_TO_EMBEDDINGS_DIRECTORY + dirname + "\\positions.hasd");
         List<Embedding> batch1 = generator.generateNEmbeddings(5, 0);
         service.putEmbeddingsToFile(batch1);
     }
+
 }

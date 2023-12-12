@@ -18,7 +18,7 @@ public class Embedding {
     @ToString.Exclude
     private float[][] embedding;
 
-    public Embedding(float[][] embedding, int embeddingSize, int id/*, Map<String, Float> map*/) {
+    public Embedding(float[][] embedding, int embeddingSize, int id) {
         this.embedding = embedding;
         this.embeddingSize = embeddingSize;
         this.id = id;

@@ -1,12 +1,8 @@
 package ru.nms.embeddingsserver.util;
 
 public class Constants {
+    public static final String PATH_TO_EMBEDDINGS_DIRECTORY = "D:\\embeddings\\";
 
-    public static final long SHARDING_COEFFICIENT = 10;
-    public static final String FILE_ENDING = ".hasd";
-    public static final String PATH_TO_EMBEDDINGS_DIRECTORY = "C:\\Users\\maria\\dev\\embeddings\\";
-
-//    public static final String PATH_TO_OFFSET_FILE =  "C:\\Users\\maria\\dev\\embeddings\\offsets.txt";
     public static final int EMBEDDING_SIZE = 768;
     public static final int EMBEDDINGS_AMOUNT = 512;
 
@@ -14,9 +10,6 @@ public class Constants {
     public static final String POSITION = "position";
     public static final String BLOCK_NUMBER = "block_number";
     public static final String AMOUNT_OF_EMBEDDINGS_IN_BLOCK = "amount_of_embeddings_in_block";
-
-    public static final String OFFSET = "offset";
-
     public static final Long BLOCK_SIZE = 300L;
 
     // 768 * 2 = 1 536 bytes (one embedding)
