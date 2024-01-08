@@ -1,9 +1,13 @@
 package ru.nms.embeddingsserver.exception;
 
-public class EmbeddingNotFoundException extends RuntimeException{
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
-    @Override
-    public String getMessage() {
-        return "Embedding with given id was not found";
+public class EmbeddingNotFoundException extends ResponseStatusException {
+
+    public EmbeddingNotFoundException() {
+        super(HttpStatus.NOT_FOUND, "Embedding with given id was not found");
     }
+
+
 }

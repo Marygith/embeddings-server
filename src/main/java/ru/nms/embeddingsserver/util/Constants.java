@@ -23,6 +23,6 @@ public class Constants {
 
     public static final String PATH_TO_POSITIONS = "C:\\Users\\maria\\dev\\embeddings\\positions.hasd";
 
-    public static final byte[] MAGIC = new byte[] { (byte) 'H', (byte) 'a', (byte) 's', (byte) 'd' };
+    public static final byte[] MAGIC = new byte[]{(byte) 'H', (byte) 'a', (byte) 's', (byte) 'd'};
 
 }

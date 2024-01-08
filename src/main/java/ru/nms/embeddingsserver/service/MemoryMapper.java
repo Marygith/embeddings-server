@@ -15,38 +15,32 @@ import java.nio.channels.FileChannel;
 import java.security.PrivilegedAction;
 
 
+@Setter
 @Getter
 @Component
 @Slf4j
 public class MemoryMapper {
-    @Setter
     private MappedByteBuffer mappedByteBuffer;
 
-    public void initMapperForReading(String fileName, long position, long  length) {
+    public void initMapperForReading(String fileName, long position, long length) {
         try (RandomAccessFile file = new RandomAccessFile(fileName, "r");
-             FileChannel fileChannel = file.getChannel();)
-        {
+             FileChannel fileChannel = file.getChannel();) {
             mappedByteBuffer = fileChannel
-                    .map(FileChannel.MapMode.READ_ONLY, position,length);
+                    .map(FileChannel.MapMode.READ_ONLY, position, length);
             int a = 0;
         } catch (Exception e) {
-            log.atError().log("initialization failed due to " + e.getMessage());
+            log.error("initialization failed due to " + e.getMessage());
         }
     }
 
     public void initMapperForWriting(String fileName, long position, long length) {
         try (RandomAccessFile file = new RandomAccessFile(fileName, "rw");
-             FileChannel fileChannel = file.getChannel();)
-        {
+             FileChannel fileChannel = file.getChannel();) {
             mappedByteBuffer = fileChannel
                     .map(FileChannel.MapMode.READ_WRITE, position, length);
         } catch (Exception e) {
-            log.atError().log("initialization failed due to " + e.getMessage());
+            log.error("initialization failed due to " + e.getMessage());
         }
-    }
-
-    public void close() {
-        mappedByteBuffer = null;
     }
 
 }

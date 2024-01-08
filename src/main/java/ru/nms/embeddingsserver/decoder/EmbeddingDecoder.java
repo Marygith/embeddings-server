@@ -1,21 +1,22 @@
 package ru.nms.embeddingsserver.decoder;
 
 import lombok.Getter;
-import ru.nms.embeddingsserver.model.Embedding;
 
 import java.io.IOException;
-import java.nio.MappedByteBuffer;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
+
+import ru.nms.embeddingslibrary.model.Embedding;
 
 import static ru.nms.embeddingsserver.util.Constants.MAGIC;
 
 @Getter
 public class EmbeddingDecoder extends DataDecoder<Embedding> {
 
-    private final MappedByteBuffer buffer;
+    private final ByteBuffer buffer;
     private final byte[] buf = new byte[4];
 
-    public EmbeddingDecoder(MappedByteBuffer buffer) {
+    public EmbeddingDecoder(ByteBuffer buffer) {
         try {
             this.buffer = buffer;
             if (buffer.capacity() < MAGIC.length) {
@@ -28,6 +29,7 @@ public class EmbeddingDecoder extends DataDecoder<Embedding> {
 
     @Override
     protected void readData(Embedding embedding) throws IOException {
+
         byte[] magic = new byte[MAGIC.length];
         readBytes(magic, 0, MAGIC.length);
         if (!Arrays.equals(MAGIC, magic))
@@ -41,6 +43,8 @@ public class EmbeddingDecoder extends DataDecoder<Embedding> {
         }
         embedding.setEmbedding(vectors);
         embedding.setId(id);
+        System.out.println("read embedding with id " + id);
+        System.out.println(buffer.capacity() - buffer.position() + " bytes left");
     }
 
     @Override
@@ -50,7 +54,7 @@ public class EmbeddingDecoder extends DataDecoder<Embedding> {
         buffer.get(bytes);
     }
 
-    public int readInt(MappedByteBuffer buffer) {
+    public int readInt(ByteBuffer buffer) {
         return buffer.getInt();
     }
 
@@ -64,7 +68,7 @@ public class EmbeddingDecoder extends DataDecoder<Embedding> {
     }
 
     @Override
-    public MappedByteBuffer getBuffer() {
+    public ByteBuffer getBuffer() {
         return buffer;
     }
 

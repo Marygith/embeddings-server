@@ -1,10 +1,9 @@
 package ru.nms.embeddingsserver.encoder;
 
-import ru.nms.embeddingsserver.model.Embedding;
-
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 
+import ru.nms.embeddingslibrary.model.Embedding;
 
 public class EmbeddingWriter extends DataWriter<Embedding> {
 
@@ -20,9 +19,8 @@ public class EmbeddingWriter extends DataWriter<Embedding> {
     }
 
     @Override
-    public MappedByteBuffer getMappedByteBuffer(){
+    public MappedByteBuffer getMappedByteBuffer() {
         return dataEncoder.getMappedByteBuffer();
     }
-
 
 }

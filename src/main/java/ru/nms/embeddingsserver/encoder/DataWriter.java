@@ -6,6 +6,7 @@ import java.nio.MappedByteBuffer;
 public abstract class DataWriter<T> {
 
     protected DataEncoder<T> dataEncoder;
+
     public abstract void create(MappedByteBuffer buffer) throws IOException;
 
     public abstract void addData(T data) throws IOException;

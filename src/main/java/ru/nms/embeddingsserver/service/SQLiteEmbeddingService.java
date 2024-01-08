@@ -1,11 +1,12 @@
 package ru.nms.embeddingsserver.service;
 
-import ru.nms.embeddingsserver.model.Embedding;
 import ru.nms.embeddingsserver.util.Constants;
 
 import java.io.*;
 import java.sql.*;
 import java.util.List;
+
+import ru.nms.embeddingslibrary.model.Embedding;
 
 public class SQLiteEmbeddingService {
 

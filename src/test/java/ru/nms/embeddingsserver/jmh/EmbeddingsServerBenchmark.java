@@ -3,7 +3,6 @@ package ru.nms.embeddingsserver.jmh;
 
 import lombok.Getter;
 import org.openjdk.jmh.annotations.*;
-import ru.nms.embeddingsserver.model.Embedding;
 import ru.nms.embeddingsserver.service.EmbeddingService;
 import ru.nms.embeddingsserver.service.SQLiteEmbeddingService;
 import ru.nms.embeddingsserver.util.EmbeddingGenerator;
@@ -17,6 +16,8 @@ import java.util.concurrent.TimeUnit;
 
 import static ru.nms.embeddingsserver.util.Constants.BLOCK_SIZE;
 import static ru.nms.embeddingsserver.util.Constants.PATH_TO_EMBEDDINGS_DIRECTORY;
+
+import ru.nms.embeddingslibrary.model.Embedding;
 
 @Fork(1)
 @State(Scope.Benchmark)

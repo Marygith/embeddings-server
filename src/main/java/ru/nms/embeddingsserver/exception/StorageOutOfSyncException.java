@@ -1,7 +1,7 @@
 package ru.nms.embeddingsserver.exception;
 
 
-public class StorageOutOfSyncException extends RuntimeException{
+public class StorageOutOfSyncException extends RuntimeException {
 
     @Override
     public String getMessage() {

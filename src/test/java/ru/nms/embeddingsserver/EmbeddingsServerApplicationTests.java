@@ -1,12 +1,10 @@
 package ru.nms.embeddingsserver;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.nms.embeddingsserver.exception.EmbeddingNotFoundException;
-import ru.nms.embeddingsserver.model.Embedding;
 import ru.nms.embeddingsserver.service.EmbeddingService;
 import ru.nms.embeddingsserver.util.EmbeddingGenerator;
 
@@ -14,11 +12,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static ru.nms.embeddingsserver.util.Constants.*;
-
+import ru.nms.embeddingslibrary.model.Embedding;
 @SpringBootTest
 class EmbeddingsServerApplicationTests {
 

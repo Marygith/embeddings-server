@@ -1,11 +1,11 @@
 package ru.nms.embeddingsserver.encoder;
 
-import ru.nms.embeddingsserver.model.Embedding;
-
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
 
 import static ru.nms.embeddingsserver.util.Constants.MAGIC;
+
+import ru.nms.embeddingslibrary.model.Embedding;
 
 public class EmbeddingEncoder extends DataEncoder<Embedding> {
 

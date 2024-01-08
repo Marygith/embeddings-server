@@ -4,13 +4,14 @@ package ru.nms.embeddingsserver.util;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
-import ru.nms.embeddingsserver.model.Embedding;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static ru.nms.embeddingsserver.util.Constants.EMBEDDINGS_AMOUNT;
 import static ru.nms.embeddingsserver.util.Constants.EMBEDDING_SIZE;
+
+import ru.nms.embeddingslibrary.model.Embedding;
 
 @Getter
 @Setter
@@ -47,6 +48,7 @@ public class EmbeddingGenerator {
             }
         }
     }
+
     public void generateData() {
         generateId();
     }

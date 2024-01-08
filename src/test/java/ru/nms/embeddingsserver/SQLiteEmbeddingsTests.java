@@ -1,11 +1,9 @@
 package ru.nms.embeddingsserver;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import ru.nms.embeddingsserver.model.Embedding;
 import ru.nms.embeddingsserver.util.Constants;
 import ru.nms.embeddingsserver.util.EmbeddingGenerator;
 
@@ -14,9 +12,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.*;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import ru.nms.embeddingslibrary.model.Embedding;
 
 @SpringBootTest
 public class SQLiteEmbeddingsTests {
