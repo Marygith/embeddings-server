@@ -35,11 +35,16 @@ public class EmbeddingService {
     @Getter
     private MappedByteBuffer positionsBuffer;
 
-    private  String pathToMetaFile;
+    @Getter
+    private MappedByteBuffer embeddingsBuffer;
 
-    private  String pathToEmbeddingsFile;
+    private String pathToMetaFile;
 
-    private  String pathToPositionsFile;
+    private String pathToEmbeddingsFile;
+
+    private String pathToPositionsFile;
+
+    private ByteBuffer tempByteBuffer;
 
     private List<String> metaKeys = List.of(POSITION, BLOCK_NUMBER, AMOUNT_OF_EMBEDDINGS_IN_BLOCK);
 
@@ -58,6 +63,7 @@ public class EmbeddingService {
      * @throws IOException
      */
     public Embedding findEmbeddingById(int id) throws IOException {
+        //todo log.info("searching for embedding with id " + id);
         Map<String, Long> meta = getMeta();
         long position = findEmbeddingPosition(id, meta.get(BLOCK_NUMBER)
                 * BLOCK_SIZE + meta.get(AMOUNT_OF_EMBEDDINGS_IN_BLOCK));
@@ -86,15 +92,11 @@ public class EmbeddingService {
      */
     public void putEmbeddingsToFile(List<Embedding> embeddings) throws IOException {
         initMap(embeddings.size());
-        log.info("map is initialized");
         Map<String, Long> meta = getMeta();
-        log.info("got meta");
 
         writeEmbeddingsToBlock(embeddings, meta.getOrDefault(POSITION, 0L));
-        log.info("embeddings are written");
 
         writeMeta(embeddings, meta);
-        log.info("meta is written");
 
     }
 
@@ -145,13 +147,14 @@ public class EmbeddingService {
 
 
         while (reader.hasNext()) {
-            Embedding embedding = new Embedding(null, EMBEDDING_SIZE, 0);
+            Embedding embedding = new Embedding(0, EMBEDDING_SIZE, null);
             reader.readData(embedding);
             embeddings.add(embedding);
         }
         return embeddings;
 
     }
+
     private void deletePositionsInfo(int position, Map<String, Long> meta) throws IOException {
         positionsBuffer.position(position + 12);
 
@@ -183,6 +186,7 @@ public class EmbeddingService {
                 writer.addData(e);
             }
             writer.getMappedByteBuffer().load();
+            embeddingsBuffer = writer.getMappedByteBuffer();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -197,7 +201,7 @@ public class EmbeddingService {
 
 
         while (reader.hasNext()) {
-            Embedding embedding = new Embedding(null, EMBEDDING_SIZE, 0);
+            Embedding embedding = new Embedding(0, EMBEDDING_SIZE, null);
             reader.readData(embedding);
             embeddings.add(embedding);
         }
@@ -209,7 +213,9 @@ public class EmbeddingService {
         MemoryMapper mapper = new MemoryMapper();
         mapper.initMapperForReading(pathToEmbeddingsFile, 0,
                 position);
-        return mapper.getMappedByteBuffer().array();
+        byte[] result = new byte[mapper.getMappedByteBuffer().capacity()];
+        mapper.getMappedByteBuffer().get(result);
+        return result;
 
     }
 
@@ -340,19 +346,21 @@ public class EmbeddingService {
     }
 
     private Embedding getEmbeddingByPosition(long embeddingPosition, int embeddingId) throws IOException {
-        MemoryMapper mapper = new MemoryMapper();
-        mapper.initMapperForReading(pathToEmbeddingsFile, embeddingPosition, EMBEDDING_SIZE_IN_BYTES);
-        Embedding embedding = parseEmbedding(mapper.getMappedByteBuffer());
+
+        embeddingsBuffer.position((int) embeddingPosition);
+        embeddingsBuffer.limit((int) (embeddingPosition + EMBEDDING_SIZE_IN_BYTES));
+        tempByteBuffer = embeddingsBuffer.slice();
+        Embedding embedding = parseEmbedding(tempByteBuffer);
         if (embedding == null || embedding.getId() != embeddingId) {
             throw new StorageOutOfSyncException();
         }
         return embedding;
     }
 
-    private Embedding parseEmbedding(MappedByteBuffer buffer) throws IOException {
+    private Embedding parseEmbedding(ByteBuffer buffer) throws IOException {
         DataReader<Embedding> reader = new EmbeddingReader(buffer);
         if (reader.hasNext()) {
-            Embedding embedding = new Embedding(null, EMBEDDING_SIZE, 0);
+            Embedding embedding = new Embedding(0, EMBEDDING_SIZE, null);
             reader.readData(embedding);
             return embedding;
         }
@@ -370,11 +378,16 @@ public class EmbeddingService {
         }
     }
 
-    public void close() throws IOException {
+    public void close() {
         positionsBuffer = null;
 
-        Files.deleteIfExists(Path.of(pathToEmbeddingsFile));
-        Files.deleteIfExists(Path.of(pathToMetaFile));
-        Files.deleteIfExists(Path.of(pathToPositionsFile));
+        try {
+            Files.deleteIfExists(Path.of(pathToEmbeddingsFile));
+
+            Files.deleteIfExists(Path.of(pathToMetaFile));
+            Files.deleteIfExists(Path.of(pathToPositionsFile));
+        } catch (IOException e) {
+            log.warn("Didn't manage to delete files");
+        }
     }
 }

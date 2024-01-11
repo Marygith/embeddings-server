@@ -41,7 +41,6 @@ public class TransferService {
 
     private ServerSocket serverSocket;
 
-    //    private Socket clientSocket;
     private String url;
 
     @PostConstruct
@@ -52,9 +51,10 @@ public class TransferService {
         Runnable acceptConnectionsTask = () -> {
             try {
                 serverSocket = new ServerSocket(port - 10);
-                System.out.println("Waiting for clients to connect...");
+                log.info("Waiting for clients to connect...");
                 while (true) {
                     Socket clientSocket = serverSocket.accept();
+                    log.info("Accepted connection");
                     clientProcessingPool.submit(new ReceiveEmbeddingsTask(clientSocket));
                 }
             } catch (IOException e) {
@@ -67,23 +67,15 @@ public class TransferService {
         log.info("Finished transfer service initialization");
     }
 
-    public void transferEmbeddingsTo(int embeddingsHash, String address, int port, byte[] embeddings) {
-        HttpEntity<TransferDto> requestEntity = new HttpEntity<>(TransferDto.builder().hash(embeddingsHash).address("localhost").port(port).build(), headers);
+    public void transferEmbeddingsTo(int embeddingsHash, int port, byte[] embeddings) {
 
-        try {
-            url = createUrl(address, port, "/receive");
-            restTemplate.postForObject(url, requestEntity, ResponseEntity.class);
-
-        } catch (RestClientException e) {
-            throw new WorkerTransferException(url);
-        }
         try (
                 Socket socket = new Socket("localhost", port);
         ) {
 
             dataOutputStream = new DataOutputStream(socket.getOutputStream());
+            dataOutputStream.writeInt(embeddingsHash);
             dataOutputStream.writeLong(embeddings.length);
-            log.info("Sending " + embeddings.length + " embeddings");
 
             int chunkSize = 1024; // Chunk size in bytes
             int offset = 0;
@@ -102,9 +94,6 @@ public class TransferService {
         }
     }
 
-    public static String createUrl(String address, int port, String endPoint) {
-        return "http://" + address + ":" + port + endPoint;
-    }
 
     private class ReceiveEmbeddingsTask implements Runnable {
         private final Socket clientSocket;
@@ -118,17 +107,14 @@ public class TransferService {
 
             try {
 
-                log.info("Client connection accepted");
 
                 dataInputStream = new DataInputStream(clientSocket.getInputStream());
                 int hash = dataInputStream.readInt();
-                log.info("Hash equals " + hash);
+
                 long embeddingsSize = dataInputStream.readLong();
-                log.info("Receiving " + embeddingsSize + " bytes");
 
                 byte[] embeddings = dataInputStream.readAllBytes();
-                log.info("All bytes are written");
-                log.info("got byte array with size " + embeddings.length);
+
                 ByteBuffer buffer = ByteBuffer.wrap(embeddings);
 
                 dataInputStream.close();

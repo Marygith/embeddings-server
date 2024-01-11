@@ -1,11 +1,10 @@
 package ru.nms.embeddingsserver.encoder;
 
-import java.io.IOException;
+import ru.nms.embeddingslibrary.model.Embedding;
+
 import java.nio.MappedByteBuffer;
 
 import static ru.nms.embeddingsserver.util.Constants.MAGIC;
-
-import ru.nms.embeddingslibrary.model.Embedding;
 
 public class EmbeddingEncoder extends DataEncoder<Embedding> {
 
@@ -17,7 +16,7 @@ public class EmbeddingEncoder extends DataEncoder<Embedding> {
 
 
     @Override
-    public void writeData(Embedding embedding) throws IOException {
+    public void writeData(Embedding embedding) {
         writeBytes(MAGIC, 0, 4);
         int amount = embedding.getEmbedding().length;
         float[][] vectors = embedding.getEmbedding();
@@ -50,7 +49,7 @@ public class EmbeddingEncoder extends DataEncoder<Embedding> {
     }
 
 
-    private void writeFloatArray(float[] arr, int len) throws IOException {
+    private void writeFloatArray(float[] arr, int len) {
         for (int i = 0; i < len; i++) {
             writeFloat(arr[i]);
         }

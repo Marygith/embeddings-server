@@ -6,11 +6,13 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.nms.embeddingslibrary.model.Embedding;
 
 import static ru.nms.embeddingsserver.util.Constants.MAGIC;
 
 @Getter
+@Slf4j
 public class EmbeddingDecoder extends DataDecoder<Embedding> {
 
     private final ByteBuffer buffer;
@@ -20,7 +22,7 @@ public class EmbeddingDecoder extends DataDecoder<Embedding> {
         try {
             this.buffer = buffer;
             if (buffer.capacity() < MAGIC.length) {
-                System.out.println("very baad");
+                log.error("Not a hasd data file.");
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -43,8 +45,6 @@ public class EmbeddingDecoder extends DataDecoder<Embedding> {
         }
         embedding.setEmbedding(vectors);
         embedding.setId(id);
-        System.out.println("read embedding with id " + id);
-        System.out.println(buffer.capacity() - buffer.position() + " bytes left");
     }
 
     @Override

@@ -27,7 +27,6 @@ public class MemoryMapper {
              FileChannel fileChannel = file.getChannel();) {
             mappedByteBuffer = fileChannel
                     .map(FileChannel.MapMode.READ_ONLY, position, length);
-            int a = 0;
         } catch (Exception e) {
             log.error("initialization failed due to " + e.getMessage());
         }

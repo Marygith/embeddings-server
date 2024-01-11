@@ -22,7 +22,7 @@ public class SQLiteEmbeddingService {
             ResultSet rs = statement.executeQuery("SELECT * FROM embeddings WHERE id = " + id);
 
             if (rs.next()) {
-                return new Embedding(bytesToVectors(Constants.EMBEDDING_SIZE, rs.getBytes("vectors")), rs.getInt("size"), rs.getInt("id"));
+                return new Embedding( rs.getInt("id"),  rs.getInt("size"), bytesToVectors(Constants.EMBEDDING_SIZE, rs.getBytes("vectors")));
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

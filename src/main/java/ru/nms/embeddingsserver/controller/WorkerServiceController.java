@@ -6,16 +6,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.nms.embeddingslibrary.model.Embedding;
+import ru.nms.embeddingslibrary.model.TransferRequest;
 import ru.nms.embeddingsserver.exception.EmbeddingNotFoundException;
 import ru.nms.embeddingsserver.exception.HashNotFoundException;
 import ru.nms.embeddingsserver.exception.WorkerTransferException;
-import ru.nms.embeddingsserver.model.EmbeddingDto;
-import ru.nms.embeddingsserver.model.TransferDto;
-import ru.nms.embeddingsserver.model.TransferRequest;
 import ru.nms.embeddingsserver.service.RetrievalService;
 import ru.nms.embeddingsserver.service.TransferService;
-
-import java.nio.ByteBuffer;
 
 @RestController
 @RequestMapping("/worker")
@@ -29,17 +25,16 @@ public class WorkerServiceController {
 
     @PostMapping("/transfer")
     public void transferEmbeddings(@RequestBody TransferRequest transferRequest) {
-        log.info("came request to transfer embeddings with hash " + transferRequest.hash() + " to " + transferRequest.address() + ":" + transferRequest.port());
+        //todo log.info("came request to transfer embeddings with hash " + transferRequest.hash() + " to " + transferRequest.address() + ":" + transferRequest.port());
         byte[] embeddings = retrievalService.getEmbeddingsAsBytesByHash(transferRequest.hash());
-        transferService.transferEmbeddingsTo(transferRequest.hash(), transferRequest.address(), transferRequest.port(), embeddings);
-        retrievalService.deleteEmbeddingsByHash(transferRequest.hash());
+        transferService.transferEmbeddingsTo(transferRequest.hash(), transferRequest.port() - 10, embeddings);
+//        retrievalService.deleteEmbeddingsByHash(transferRequest.hash()); //todo implement real deleting of files
 
     }
 
     @GetMapping("/embeddings/{hash}/{id}")
     public Embedding getEmbedding(@PathVariable int hash, @PathVariable int id) {
         log.info("came request to retrieve embedding with id " + id + " and hash " + hash);
-
         return retrievalService.getEmbeddingById(hash, id);
     }
 
@@ -55,6 +50,4 @@ public class WorkerServiceController {
                 .status(exception.getStatus())
                 .body(exception.getMessage());
     }
-
-
 }

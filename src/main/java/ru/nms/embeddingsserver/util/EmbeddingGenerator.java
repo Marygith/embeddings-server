@@ -63,7 +63,7 @@ public class EmbeddingGenerator {
         List<Embedding> embeddings = new ArrayList<>();
         for (int i = 0; i < n; i++) {
             generateData();
-            embeddings.add(new Embedding(getEmbeddingAsArray(), EMBEDDING_SIZE, id));
+            embeddings.add(new Embedding(id, EMBEDDING_SIZE, getEmbeddingAsArray()));
         }
         return embeddings;
     }

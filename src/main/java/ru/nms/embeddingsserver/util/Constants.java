@@ -18,11 +18,6 @@ public class Constants {
     //786 436 + 8(id + amount) = 786 444
     // ~ 300 embeddings in one block
 
-    public static final String PATH_TO_META_FILE = "C:\\Users\\maria\\dev\\embeddings\\meta.txt";
-    public static final String PATH_TO_EMBEDDINGS_FILE = "C:\\Users\\maria\\dev\\embeddings\\embeddings.hasd";
-
-    public static final String PATH_TO_POSITIONS = "C:\\Users\\maria\\dev\\embeddings\\positions.hasd";
-
     public static final byte[] MAGIC = new byte[]{(byte) 'H', (byte) 'a', (byte) 's', (byte) 'd'};
 
 }

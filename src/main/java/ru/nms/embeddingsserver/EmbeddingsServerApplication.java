@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import ru.nms.embeddingslibrary.model.MasterServiceMeta;
 import ru.nms.embeddingslibrary.model.WorkerServiceMeta;
 
 import javax.annotation.PostConstruct;
@@ -31,6 +32,7 @@ public class EmbeddingsServerApplication {
     @Value("${zookeeper.service.base.path}")
     private String basePath;
     private CuratorFramework client;
+    private ServiceDiscovery<WorkerServiceMeta> serviceDiscovery;
     @Value("${zookeeper.service.base.max.retry.policy}")
     private int maxRetries;
 
@@ -48,6 +50,9 @@ public class EmbeddingsServerApplication {
     @Value("${zookeeper.address}")
     private String zookeeperAddress;
 
+    @Value("${zookeeper.worker.service.address}")
+    private String address;
+
     public static void main(String[] args) {
         SpringApplication.run(EmbeddingsServerApplication.class, args);
     }
@@ -55,6 +60,11 @@ public class EmbeddingsServerApplication {
     @Bean
     public CuratorFramework createClient() {
         return client;
+    }
+
+    @Bean
+    public ServiceDiscovery<WorkerServiceMeta>  getServiceDiscovery() {
+        return serviceDiscovery;
     }
 
     @PostConstruct
@@ -67,7 +77,7 @@ public class EmbeddingsServerApplication {
         client = CuratorFrameworkFactory.newClient(zookeeperAddress, new ExponentialBackoffRetry(sleepTimeInMillis, maxRetries));
         client.start();
         JsonInstanceSerializer<WorkerServiceMeta> serializer = new JsonInstanceSerializer<>(WorkerServiceMeta.class);
-        ServiceDiscovery<WorkerServiceMeta> serviceDiscovery = ServiceDiscoveryBuilder.builder(WorkerServiceMeta.class)
+        /*ServiceDiscovery<WorkerServiceMeta> */serviceDiscovery = ServiceDiscoveryBuilder.builder(WorkerServiceMeta.class)
                 .client(client)
                 .serializer(serializer)
                 .basePath(basePath)
@@ -76,22 +86,21 @@ public class EmbeddingsServerApplication {
 
         try {
             serviceDiscovery.start();
-            String id = UUID.randomUUID().toString();
+/*            String id = UUID.randomUUID().toString();
             ServiceInstance<WorkerServiceMeta> instance = ServiceInstance.<WorkerServiceMeta>builder()
                     .id(id)
                     .name(workerServiceName)
                     .port(port)
-                    .address("localhost")   //If address is not written, you will take your local IP.
-                    .payload(new WorkerServiceMeta(instanceName, new ArrayList<>()))
+                    .address(address)   //If address is not written, you will take your local IP.
+                    .payload(new WorkerServiceMeta(instanceName, new ArrayList<>(), address, port))
                     .build();
             serviceDiscovery.registerService(instance);
 
-//			serviceDiscovery.start();
             ServiceProvider<WorkerServiceMeta> serviceProvider = serviceDiscovery.serviceProviderBuilder().serviceName(workerServiceName)
                     .build();
             serviceProvider.start();
 
-            serviceProvider.getAllInstances().forEach(System.out::println);
+            serviceProvider.getAllInstances().forEach(System.out::println);*/
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

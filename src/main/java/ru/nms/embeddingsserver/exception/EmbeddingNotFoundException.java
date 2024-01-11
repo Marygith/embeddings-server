@@ -8,6 +8,4 @@ public class EmbeddingNotFoundException extends ResponseStatusException {
     public EmbeddingNotFoundException() {
         super(HttpStatus.NOT_FOUND, "Embedding with given id was not found");
     }
-
-
 }
